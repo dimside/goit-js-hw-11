@@ -11,25 +11,28 @@ const refs = {
   galleryEl: document.querySelector('.gallery'),
   loadMoreButtonEl: document.querySelector('.load-more'),
 };
-
-refs.loadMoreButtonEl.classList.add('hidden');
-
-function smoothScroll() {
-  const { height: cardHeight } =
-    refs.galleryEl.firstElementChild.getBoundingClientRect();
-  window.scrollBy({
-    top: (cardHeight + 20) * 10,
-    behavior: 'smooth',
-  });
-}
-
-// function callback(entries) {
-//   entries.forEach(entrie => {
-//     onLoadButton();
+// ---------------Smooth Scroll ----------------------------
+// function smoothScroll() {
+//   const { height: cardHeight } =
+//     refs.galleryEl.firstElementChild.getBoundingClientRect();
+//   window.scrollBy({
+//     top: (cardHeight + 20) * 10,
+//     behavior: 'smooth',
 //   });
 // }
-// const options = {};
-// const observer = new IntersectionObserver(callback, options);
+// ---------------------------------------------------------
+
+// ---------------Infinity Scroll ---------------------------
+function callback(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      onLoadButton();
+    }
+  });
+}
+const options = { rootMargin: '50px' };
+const observer = new IntersectionObserver(callback, options);
+// ----------------------------------------------------------
 
 async function fetchCards() {
   try {
@@ -37,7 +40,6 @@ async function fetchCards() {
     const markup = renderCards(cards.hits);
     refs.galleryEl.insertAdjacentHTML('beforeend', markup);
 
-   
     let gallery = new SimpleLightbox('.gallery a', {
       captionsData: 'alt',
       captionPosition: 'bottom',
@@ -79,9 +81,9 @@ async function onFormSubmit(e) {
       Notiflix.Notify.info(
         `Hooray! We found ${pixabayApiService.totalHits} images.`
       );
-      refs.loadMoreButtonEl.classList.remove('hidden');
-       smoothScroll();
-
+      observer.observe(refs.loadMoreButtonEl);
+      // refs.loadMoreButtonEl.classList.remove('hidden');
+      //  smoothScroll();
     }
   } catch (error) {
     console.log('I catch:', error);
@@ -93,17 +95,21 @@ refs.loadMoreButtonEl.addEventListener('click', onLoadButton);
 async function onLoadButton() {
   await fetchCards();
   pixabayApiService.incrementPage();
-  smoothScroll();
+
+  // smoothScroll();
+
   console.log(pixabayApiService.page);
   console.log(
-    pixabayApiService.totalHits ===
+    pixabayApiService.totalHits <
       pixabayApiService.per_page * pixabayApiService.page
   );
+
   if (
-    pixabayApiService.totalHits ===
+    pixabayApiService.totalHits <
     pixabayApiService.per_page * pixabayApiService.page
   ) {
-    refs.loadMoreButtonEl.classList.add('hidden');
+    observer.disconnect();
+    // refs.loadMoreButtonEl.classList.add('hidden');
     Notiflix.Notify.info(
       "We're sorry, but you've reached the end of search results."
     );
