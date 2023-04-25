@@ -1,0 +1,87 @@
+#search-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  background-color: rgb(78, 76, 180);
+}
+
+input {
+  width: 300px;
+  height: 30px;
+  border-radius: 7px;
+  margin-right: 10px;
+}
+
+button[type='submit'] {
+  height: 30px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  column-gap: 20px;
+  row-gap: 20px;
+}
+
+.photo-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 400px;
+  width: calc((100% - 3 * 20px) / 4);
+  border: 1px solid grey;
+  border-radius: 5px;
+  box-shadow: 5px 5px 7px lightsteelblue;
+}
+
+.img-container {
+  display: block;
+  width: 100%;
+  height: 320px;
+}
+
+img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.info {
+  height: 80px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+p {
+  margin: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 1vw;
+}
+
+.load-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.load-more.hidden {
+  visibility: hidden;
+}
+
+.load-more {
+  margin-top: 20px;
+  height: 30px;
+  border-radius: 7px;
+  cursor: pointer;
+}
