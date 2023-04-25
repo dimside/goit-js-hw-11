@@ -34,6 +34,7 @@ const options = { rootMargin: '50px' };
 const observer = new IntersectionObserver(callback, options);
 // ----------------------------------------------------------
 
+// ----------------Fetch and Markup Cards -----------------
 async function fetchCards() {
   try {
     const cards = await pixabayApiService.fetchPhotos();
@@ -59,12 +60,15 @@ async function fetchCards() {
     );
   }
 }
+// --------------------------------------------------------
 
+
+// -----------------OnSubmit event ---------------------------------------------
 refs.formEl.addEventListener('submit', onFormSubmit);
 
 async function onFormSubmit(e) {
   e.preventDefault();
-  refs.loadMoreButtonEl.classList.add('hidden');
+  observer.disconnect();
 
   refs.galleryEl.innerHTML = '';
   pixabayApiService.resetPage();
@@ -81,6 +85,8 @@ async function onFormSubmit(e) {
       Notiflix.Notify.info(
         `Hooray! We found ${pixabayApiService.totalHits} images.`
       );
+      pixabayApiService.incrementPage();
+      console.log(pixabayApiService.page);
       observer.observe(refs.loadMoreButtonEl);
       // refs.loadMoreButtonEl.classList.remove('hidden');
       //  smoothScroll();
@@ -89,7 +95,9 @@ async function onFormSubmit(e) {
     console.log('I catch:', error);
   }
 }
+// ---------------------------------------------------------------------------------
 
+// -------------------Load More Cards Event -------------------------------------
 refs.loadMoreButtonEl.addEventListener('click', onLoadButton);
 
 async function onLoadButton() {
@@ -99,10 +107,6 @@ async function onLoadButton() {
   // smoothScroll();
 
   console.log(pixabayApiService.page);
-  console.log(
-    pixabayApiService.totalHits <
-      pixabayApiService.per_page * pixabayApiService.page
-  );
 
   if (
     pixabayApiService.totalHits <
@@ -115,3 +119,4 @@ async function onLoadButton() {
     );
   }
 }
+// -------------------------------------------------------------------------------
