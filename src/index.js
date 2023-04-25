@@ -4,7 +4,6 @@ import renderCards from './renderPhotoCard';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-
 const pixabayApiService = new PixabayApiService();
 
 const refs = {
@@ -15,13 +14,36 @@ const refs = {
 
 refs.loadMoreButtonEl.classList.add('hidden');
 
+function smoothScroll() {
+  const { height: cardHeight } =
+    refs.galleryEl.firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: (cardHeight + 20) * 10,
+    behavior: 'smooth',
+  });
+}
+
+// function callback(entries) {
+//   entries.forEach(entrie => {
+//     onLoadButton();
+//   });
+// }
+// const options = {};
+// const observer = new IntersectionObserver(callback, options);
+
 async function fetchCards() {
   try {
     const cards = await pixabayApiService.fetchPhotos();
     const markup = renderCards(cards.hits);
-    let gallery = new SimpleLightbox('.gallery a');
-    gallery.refresh()
     refs.galleryEl.insertAdjacentHTML('beforeend', markup);
+
+   
+    let gallery = new SimpleLightbox('.gallery a', {
+      captionsData: 'alt',
+      captionPosition: 'bottom',
+      captionDelay: 250,
+    });
+    gallery.refresh();
 
     pixabayApiService.totalHits = cards.totalHits;
   } catch (error) {
@@ -58,6 +80,8 @@ async function onFormSubmit(e) {
         `Hooray! We found ${pixabayApiService.totalHits} images.`
       );
       refs.loadMoreButtonEl.classList.remove('hidden');
+       smoothScroll();
+
     }
   } catch (error) {
     console.log('I catch:', error);
@@ -69,6 +93,12 @@ refs.loadMoreButtonEl.addEventListener('click', onLoadButton);
 async function onLoadButton() {
   await fetchCards();
   pixabayApiService.incrementPage();
+  smoothScroll();
+  console.log(pixabayApiService.page);
+  console.log(
+    pixabayApiService.totalHits ===
+      pixabayApiService.per_page * pixabayApiService.page
+  );
   if (
     pixabayApiService.totalHits ===
     pixabayApiService.per_page * pixabayApiService.page
@@ -79,4 +109,3 @@ async function onLoadButton() {
     );
   }
 }
-

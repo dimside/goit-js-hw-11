@@ -12,7 +12,7 @@ export default function renderCards(cards) {
       } = card;
       return `<div class="photo-card">
     <div class="img-container">
-        <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" loading="lazy" />
+        <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
     </div>
   <div class="info">
     <p class="info-item">
@@ -32,7 +32,7 @@ export default function renderCards(cards) {
       <span>${downloads}</span>     
     </p>
   </div>
-</div></a>`;
+</div>`;
     })
     .join('');
 }

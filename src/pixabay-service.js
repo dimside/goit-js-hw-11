@@ -4,7 +4,7 @@ export default class PixabayApiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
-    this.per_page = 100;
+    this.per_page = 40;
     this.totalHits = null;
   }
 
