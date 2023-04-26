@@ -11,6 +11,7 @@ const refs = {
   galleryEl: document.querySelector('.gallery'),
   loadMoreButtonEl: document.querySelector('.load-more'),
 };
+
 // ---------------Smooth Scroll ----------------------------
 // function smoothScroll() {
 //   const { height: cardHeight } =
@@ -62,7 +63,6 @@ async function fetchCards() {
 }
 // --------------------------------------------------------
 
-
 // -----------------OnSubmit event ---------------------------------------------
 refs.formEl.addEventListener('submit', onFormSubmit);
 
@@ -70,9 +70,13 @@ async function onFormSubmit(e) {
   e.preventDefault();
   observer.disconnect();
 
+  const searchQuery = e.currentTarget.elements.searchQuery.value;
+  if (searchQuery === '') {
+    Notiflix.Notify.info('The field must be filled!');
+    return;
+  }
   refs.galleryEl.innerHTML = '';
   pixabayApiService.resetPage();
-  const searchQuery = e.currentTarget.elements.searchQuery.value;
   pixabayApiService.setQuery(searchQuery);
   try {
     await fetchCards();
@@ -106,11 +110,9 @@ async function onLoadButton() {
 
   // smoothScroll();
 
-  console.log(pixabayApiService.page);
-
   if (
-    pixabayApiService.totalHits <
-    pixabayApiService.per_page * pixabayApiService.page
+    Math.ceil(pixabayApiService.totalHits / pixabayApiService.per_page) <
+    pixabayApiService.page
   ) {
     observer.disconnect();
     // refs.loadMoreButtonEl.classList.add('hidden');

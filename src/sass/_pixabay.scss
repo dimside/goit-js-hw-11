@@ -31,7 +31,7 @@ button[type='submit'] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 400px;
+  height: 380px;
   width: calc((100% - 3 * 20px) / 4);
   border: 1px solid grey;
   border-radius: 5px;
@@ -52,7 +52,7 @@ img {
 }
 
 .info {
-  height: 80px;
+  height: 60px;
   display: flex;
   justify-content: space-around;
   width: 100%;
